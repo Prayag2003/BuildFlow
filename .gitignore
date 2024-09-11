@@ -1,0 +1,6 @@
+node_modules
+*.env
+/.env
+/*.env
+/build-server/.env
+/build-server/node_modules
