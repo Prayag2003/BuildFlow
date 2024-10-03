@@ -16,6 +16,7 @@
 		"mime-types": "^2.1.35"
 	},
 	"devDependencies": {
-		"@types/mime-types": "^2.1.4"
+		"@types/mime-types": "^2.1.4",
+		"@types/node": "^22.7.4"
 	}
 }

@@ -4,3 +4,4 @@ node_modules
 /*.env
 /build-server/.env
 /build-server/node_modules
+*.pnpm-lock.yaml
