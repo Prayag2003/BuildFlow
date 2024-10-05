@@ -1,12 +1,10 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { exec } from "child_process";
-import fs from "fs";
-import mime from "mime-types";
-import path from "path";
-import dotenv from "dotenv";
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as mime from 'mime-types';
+import * as path from 'path';
 dotenv.config();
-
-const PROJECT_ID = process.env.PROJECT_ID;
 
 const s3Client = new S3Client({
 	region: process.env.AWS_REGION!,
@@ -17,22 +15,23 @@ const s3Client = new S3Client({
 });
 
 async function init() {
-	console.log("Building server...");
+	console.log("🎯 Building server...");
 	const outDirPath = path.join(__dirname, "output");
 
+	console.log("🎯 Running npm install and build in output directory...");
 	const command = `cd ${outDirPath} && npm install && npm run build`;
-	const process = exec(command);
+	const p = exec(command);
 
-	process.stdout?.on("data", (data: Buffer) => {
-		console.log(data.toString());
+	p.stdout?.on("data", (data: Buffer) => {
+		console.log("Data: ", data.toString());
 	});
 
-	process.stdout?.on("error", (data: Buffer) => {
+	p.stdout?.on("error", (data: Buffer) => {
 		console.log("Error: " + data.toString());
 	});
 
-	process.on("close", async () => {
-		console.log("Build complete");
+	p.on("close", async () => {
+		console.log("✅ Build complete!!!");
 		const distFolderPath = path.join(__dirname, "output", "dist");
 		const distFolderContents = fs.readdirSync(distFolderPath, {
 			recursive: true,
@@ -47,8 +46,8 @@ async function init() {
 
 			console.log("Uploading to S3: ", file);
 			const command = new PutObjectCommand({
-				Bucket: "",
-				Key: `__/outputs/${PROJECT_ID}/${file}`,
+				Bucket: process.env.AWS_S3_BUCKET!,
+				Key: `__/outputs/${process.env.PROJECT_ID}/${file}`,
 				Body: fs.createReadStream(filePath),
 				ContentType: mime.lookup(filePath) || undefined,
 			});
@@ -56,7 +55,7 @@ async function init() {
 			await s3Client.send(command);
 			console.log("Uploaded to S3: ", file);
 		}
-		console.log("Upload to S3 done!!");
+		console.log("✅ Upload to S3 done !!!");
 	});
 }
 
