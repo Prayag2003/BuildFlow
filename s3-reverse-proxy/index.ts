@@ -15,12 +15,7 @@ app.use((req: Request, res: Response) => {
     const subdomain = hostname.split('.')[0];
     const resolvesTo = `${BASE_PATH}/${subdomain}`;
 
-    return proxy.web(req, res, { target: resolvesTo, changeOrigin: true }, (err: any) => {
-        if (err) {
-            console.error('Proxy error:', err);
-            res.status(500).send('Proxy error');
-        }
-    });
+    return proxy.web(req, res, { target: resolvesTo, changeOrigin: true });
 })
 
 app.listen(PORT, () => {
