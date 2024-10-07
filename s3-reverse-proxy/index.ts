@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import { Request, Response } from "express";
+import { ClientRequest, IncomingMessage, ServerResponse } from "http";
 const express = require("express");
 const httpProxy = require("http-proxy");
 
@@ -16,6 +17,13 @@ app.use((req: Request, res: Response) => {
     const resolvesTo = `${BASE_PATH}/${subdomain}`;
 
     return proxy.web(req, res, { target: resolvesTo, changeOrigin: true });
+})
+
+proxy.on('proxyReq', (proxyReq: ClientRequest, req: IncomingMessage, res: ServerResponse) => {
+    const url = req.url;
+    if (url === '/') {
+        proxyReq.path += 'index.html'
+    }
 })
 
 app.listen(PORT, () => {
