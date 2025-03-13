@@ -23,10 +23,6 @@ The system operates on an event-driven model where:
 4. S3 storage captures build artifacts
    This approach enables loose coupling and high scalability.
 
-<div align="center">
-    <img src="assets/HLD.png" alt="High Level Design" width="800" height="400">
-</div>
-
 ## System Architecture
 
 The system consists of three main components:
